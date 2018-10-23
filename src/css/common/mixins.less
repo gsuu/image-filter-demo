@@ -1,0 +1,146 @@
+// =============================================================================
+// Mixins
+// =============================================================================
+// Self Clear
+
+.self-clear() {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+.body-width() {
+  min-width: 1200px;
+}
+// User Selection
+
+.user-select(@type: none) {
+  /* autoprefixer: off */
+  -webkit-user-select: @type;
+  -moz-user-select: @type;
+  -ms-user-select: @type;
+  -o-user-select: @type;
+  user-select: @type;
+}
+// Touch callout
+
+.touch-callout(@type: none) {
+  /* autoprefixer: off */
+  -webkit-touch-callout: @type;
+  -moz-touch-callout: @type;
+  touch-callout: @type;
+}
+// Tab highlighting
+
+.tap-highlight-color(@color: fade(#000, 0)) {
+  /* autoprefixer: off */
+  -webkit-tap-highlight-color: @color;
+  -moz-tap-highlight-color: @color;
+  tap-highlight-color: @color;
+}
+// 단어 단위로 줄바꿈
+
+.keep-word() {
+  word-break: keep-all;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+// height === line height
+
+.vertical-centering(@height) {
+  height: @height;
+  line-height: @height;
+}
+// hiding text
+
+.hidden-text() {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-indent: 110%;
+}
+// triangle
+
+.triangle-base() {
+  display: block;
+  width: 0;
+  height: 0;
+}
+
+.triangle(@direction, @width, @height, @color) when (@direction = up) {
+  .triangle-base();
+  border-left: (@width / 2) solid transparent;
+  border-right: (@width / 2) solid transparent;
+  border-bottom: @height solid @color;
+}
+
+.triangle(@direction, @width, @height, @color) when (@direction = down) {
+  .triangle-base();
+  border-left: (@width / 2) solid transparent;
+  border-right: (@width / 2) solid transparent;
+  border-top: @height solid @color;
+}
+
+.triangle(@direction, @width, @height, @color) when (@direction = left) {
+  .triangle-base();
+  border-top: (@width / 2) solid transparent;
+  border-bottom: (@width / 2) solid transparent;
+  border-right: @height solid @color;
+}
+
+.button-variate(@width, @height, @c-font, @c-bg, @radius: 0, @c-hover, @c-hover-bg) {
+  width: @width;
+  height: @height;
+  color: @c-font;
+  background-color: @c-bg;
+  border-radius: @radius;
+
+  &:hover {
+    background-color: @c-hover-bg;
+    color: @c-hover;
+  }
+}
+
+.button-blue(@width, @height, @radius) {
+  .button-variate(@width, @height, @c-font, @c-btn-hilite, @radius, @c-font, @c-btn-hilite-hover);
+}
+
+.button-gray(@width, @height, @radius) {
+  .button-variate(@width, @height, @c-font, @c-btn, @radius, @c-font, @c-btn-hover);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  background: #ddd;
+  border: none;
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: goldenrod;
+  margin-top: -4px;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]:focus::-webkit-slider-runnable-track {
+  background: #ccc;
+}
+
+.long-shadow(@x, @color, @index) when (@index > 0) {
+  box-shadow+: @x*@index 0 0 -8px @color;
+  .long-shadow(@x, @color, @index - 1);
+}

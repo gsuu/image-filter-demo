@@ -1,0 +1,93 @@
+body,
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+dd,
+dl,
+dt,
+li,
+ol,
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+address,
+em,
+i {
+  font-style: normal;
+}
+
+button,
+fieldset,
+img {
+  border: 0;
+}
+
+img,
+label {
+  vertical-align: middle;
+}
+
+button,
+label {
+  cursor: pointer;
+}
+
+caption,
+hr {
+  display: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+a {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: visible;
+  padding: 0;
+  border-radius: 0;
+
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+
+  > span {
+    position: relative;
+  }
+
+  &:focus {
+    .tap-highlight-color;
+    outline: 0;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}

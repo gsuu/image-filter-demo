@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="./css/filter-demo.css" rel="stylesheet" />
+  <title>Image Editor - WebGL Filter Demo</title>
+</head>
+
+<body>
+  <div class="filter-demo">
+    <div class="demo__main">
+      <div class="demo__preview">
+
+        <canvas class="demo__canvas" id="demoCanvas"></canvas>
+
+        <select class="demo__select demo__select--image">
+          <option value="1" selected>sample1.jpg</option>
+          <option value="2">sample2.jpg</option>
+          <option value="3">sample3.jpg</option>
+          <option value="4">sample4.jpg</option>
+        </select>
+      </div>
+
+      <div class="demo__controller">
+        <div class="demo__range demo__range--brightness">
+          <span class="demo__range__title">Brightness</span>
+          <input type="range" class="demo__range__input demo__range__input--range" min="-1" max="1" value="0" step="0.01" data-effect="brightness">
+          <span class="demo__range__number">0</span>
+        </div>
+
+        <div class="demo__range demo__range--contrast">
+          <span class="demo__range__title">Contrast</span>
+          <input type="range" class="demo__range__input demo__range__input--range" min="-1" max="1" value="0" step="0.01" data-effect="contrast">
+          <span class="demo__range__number">0</span>
+        </div>
+
+        <div class="demo__range demo__range--saturation">
+          <span class="demo__range__title">Saturation</span>
+          <input type="range" class="demo__range__input demo__range__input--range" min="-1" max="1" value="0" step="0.01" data-effect="saturation">
+          <span class="demo__range__number">0</span>
+        </div>
+
+        <div class="demo__range demo__range--hue">
+          <span class="demo__range__title">Hue</span>
+          <input type="range" class="demo__range__input demo__range__input--range" min="-120" max="120" value="0" data-effect="hue">
+          <span class="demo__range__number">0</span>
+        </div>
+
+        <div class="demo__range demo__range--alpha" hidden>
+          <span class="demo__range__title">Alpha</span>
+          <input type="range" class="demo__range__input demo__range__input--range" min="0" max="1" value="0.25" step="0.01" data-effect="alpha">
+          <span class="demo__range__number">0.25</span>
+        </div>
+
+        <div class="demo__range demo__range--color">
+          <span class="demo__range__title">Color</span>
+          <a href="#none" class="demo__button demo__button--picker" id="colorPicker" data-effect="color"></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <img src="./img/sample1.jpg" class="demo__img demo__img--1" width="600" hidden>
+  <img src="./img/sample2.jpg" class="demo__img demo__img--2" width="600" hidden>
+  <img src="./img/sample3.jpg" class="demo__img demo__img--3" width="600" hidden>
+  <img src="./img/sample4.jpg" class="demo__img demo__img--4" width="600" hidden>
+
+  <script src="./js/filter-demo.js"></script>
+</body>
+
+</html>

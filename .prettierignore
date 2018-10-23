@@ -1,0 +1,4 @@
+src/**/sprites/*.less
+**/*.md
+webpack.config.js
+gulpfile.js
