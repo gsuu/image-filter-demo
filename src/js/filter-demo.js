@@ -24,7 +24,11 @@ const defaults = {
   rangeRootSelector: '.demo__range',
   rangeInputSelector: '.demo__range__input--range',
   rangeNumberSelector: '.demo__range__number',
-  optionButtonSelector: '.demo__option__button'
+  optionButtonSelector: '.demo__option__button',
+  colorPickerTextRSelector: '.demo__range__text--value--r',
+  colorPickerTextGSelector: '.demo__range__text--value--g',
+  colorPickerTextBSelector: '.demo__range__text--value--b',
+  resultTextareaSelector: '.demo__textarea--result'
 };
 
 const defaultEffects = {
@@ -123,6 +127,15 @@ class filterDemo {
     const optionButton = document.querySelectorAll(
       settings.optionButtonSelector
     );
+    const textColorR = document.querySelector(
+      settings.colorPickerTextRSelector
+    );
+    const textColorG = document.querySelector(
+      settings.colorPickerTextGSelector
+    );
+    const textColorB = document.querySelector(
+      settings.colorPickerTextBSelector
+    );
     const webGLFilter = new _filter.WebGLImageFilter();
     const colorPicker = new Picker({
       parent: document.querySelector('.demo__button--picker'),
@@ -137,6 +150,7 @@ class filterDemo {
       filterCanvas: document.querySelector(settings.filterCanvasSelector),
       origCanvas: document.querySelector(settings.origCanvasSelector),
       image: document.querySelector(settings.imageSelector),
+      resultTextarea: document.querySelector(settings.resultTextareaSelector),
       optionButton,
       imageSelectbox,
       webGLFilter,
@@ -166,6 +180,7 @@ class filterDemo {
         this.changeRangeText(e.target, e.target.value);
         this.effects[effect] = e.target.value;
         this.changeEffect();
+        this.setResult();
       };
     });
 
@@ -182,7 +197,12 @@ class filterDemo {
         }
       );
 
+      textColorR.innerHTML = color._rgba[0];
+      textColorG.innerHTML = color._rgba[1];
+      textColorB.innerHTML = color._rgba[2];
+
       this.changeEffect();
+      this.setResult();
     };
 
     optionButton.forEach(button => {
@@ -201,6 +221,12 @@ class filterDemo {
           Object.keys(defaultEffects[optionName]).forEach(key => {
             this.setRange(key, defaultEffects[optionName][key]);
           });
+
+          textColorR.innerHTML = this.effects.color.r;
+          textColorG.innerHTML = this.effects.color.g;
+          textColorB.innerHTML = this.effects.color.b;
+
+          this.setResult();
         }
       };
     });
@@ -217,7 +243,7 @@ class filterDemo {
   }
 
   onLoad() {
-    const { filterCanvas, image } = this;
+    const { filterCanvas, image, resultTextarea } = this;
     const filterCtx = filterCanvas.getContext('2d');
     const imageRatio = 600 / image.naturalWidth;
 
@@ -229,6 +255,7 @@ class filterDemo {
     });
 
     this.changeImage('1');
+    this.setResult();
   }
 
   changeImage(value) {
@@ -271,6 +298,18 @@ class filterDemo {
     } else {
       this.colorPicker.setColor(`rgb(${value.r}, ${value.g}, ${value.b})`);
     }
+  }
+
+  setResult() {
+    const { resultTextarea, effects } = this;
+    const result = `Brightness : ${effects.brightness},
+Contrast: ${effects.contrast},
+Saturation: ${effects.saturation},
+Hue: ${effects.hue},
+Alpha: ${effects.alpha},
+Color Tint(RGB): ${effects.color.r},${effects.color.g},${effects.color.b}`;
+
+    resultTextarea.value = result;
   }
 
   changeRangeText(rangeElement, value) {
