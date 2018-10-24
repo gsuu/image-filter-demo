@@ -250,7 +250,7 @@ class filterDemo {
       0,
       0,
       600,
-      this.image.naturalHeight * imageRatio
+      Math.ceil(this.image.naturalHeight * imageRatio)
     );
 
     origCtx.clearRect(0, 0, 600, this.image.naturalHeight * imageRatio);
@@ -259,7 +259,7 @@ class filterDemo {
       0,
       0,
       600,
-      this.image.naturalHeight * imageRatio
+      Math.ceil(this.image.naturalHeight * imageRatio)
     );
   }
 
