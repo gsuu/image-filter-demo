@@ -16,8 +16,9 @@ window.jQuery = $;
 const defaults = {
   wrapperSelector: '.filter-demo',
   rootSelector: '.demo__main',
-  previewRootSelector: '.demo__preview',
-  canvasSelector: '#demoCanvas',
+  previewRootSelector: '.demo__canvas__wrapper',
+  filterCanvasSelector: '#filterCanvas',
+  origCanvasSelector: '#origCanvas',
   imageSelector: '.demo__img--1',
   imageSelectSelector: '.demo__select--image',
   rangeRootSelector: '.demo__range',
@@ -116,6 +117,7 @@ const defaultEffects = {
 class filterDemo {
   constructor(options) {
     const settings = Object.assign({}, defaults, options);
+    const previewRoot = document.querySelector(settings.previewRootSelector);
     const imageSelectbox = document.querySelector(settings.imageSelectSelector);
     const rangeInput = document.querySelectorAll(settings.rangeInputSelector);
     const optionButton = document.querySelectorAll(
@@ -132,8 +134,8 @@ class filterDemo {
     Object.assign(this, {
       settings,
       root: document.querySelector(settings.rootSelector),
-      previewRoot: document.querySelector(settings.previewRootSelector),
-      canvas: document.querySelector(settings.canvasSelector),
+      filterCanvas: document.querySelector(settings.filterCanvasSelector),
+      origCanvas: document.querySelector(settings.origCanvasSelector),
       image: document.querySelector(settings.imageSelector),
       optionButton,
       imageSelectbox,
@@ -202,35 +204,63 @@ class filterDemo {
         }
       };
     });
+
+    previewRoot.onmousedown = e => {
+      e.preventDefault();
+      filterCanvas.style.opacity = 0;
+    };
+
+    previewRoot.onmouseup = e => {
+      e.preventDefault();
+      filterCanvas.style.opacity = 1;
+    };
   }
 
   onLoad() {
-    const { canvas, image } = this;
-    const ctx = canvas.getContext('2d');
+    const { filterCanvas, image } = this;
+    const filterCtx = filterCanvas.getContext('2d');
     const imageRatio = 600 / image.naturalWidth;
 
-    canvas.width = image.width;
-
-    canvas.height = image.height * imageRatio;
+    filterCanvas.width = image.width;
+    filterCanvas.height = Math.ceil(image.height * imageRatio);
 
     Object.assign(this, {
-      ctx
+      filterCtx
     });
 
     this.changeImage('1');
   }
 
   changeImage(value) {
-    const { canvas, ctx } = this;
+    const { filterCanvas, filterCtx, origCanvas } = this;
     this.image = document.querySelector(`.demo__img--${value}`);
 
     const imageRatio = 600 / this.image.naturalWidth;
+    const origCtx = origCanvas.getContext('2d');
 
-    canvas.width = this.image.width;
-    canvas.height = this.image.height * imageRatio;
+    filterCanvas.width = this.image.width;
+    filterCanvas.height = Math.ceil(this.image.height * imageRatio);
 
-    ctx.clearRect(0, 0, 600, this.image.naturalHeight * imageRatio);
-    ctx.drawImage(this.image, 0, 0, 600, this.image.naturalHeight * imageRatio);
+    origCanvas.width = this.image.width;
+    origCanvas.height = Math.ceil(this.image.height * imageRatio);
+
+    filterCtx.clearRect(0, 0, 600, this.image.naturalHeight * imageRatio);
+    filterCtx.drawImage(
+      this.image,
+      0,
+      0,
+      600,
+      this.image.naturalHeight * imageRatio
+    );
+
+    origCtx.clearRect(0, 0, 600, this.image.naturalHeight * imageRatio);
+    origCtx.drawImage(
+      this.image,
+      0,
+      0,
+      600,
+      this.image.naturalHeight * imageRatio
+    );
   }
 
   setRange(effectName, value) {
@@ -252,7 +282,7 @@ class filterDemo {
   }
 
   changeEffect() {
-    const { image, canvas, ctx, webGLFilter, effects } = this;
+    const { image, filterCanvas, filterCtx, webGLFilter, effects } = this;
     let filteredImage;
 
     if (
@@ -306,13 +336,25 @@ class filterDemo {
 
       filteredImage = webGLFilter.apply(image);
 
-      ctx.globalAlpha = 1;
-      ctx.drawImage(this.image, 0, 0, canvas.width, canvas.height);
+      filterCtx.globalAlpha = 1;
+      filterCtx.drawImage(
+        this.image,
+        0,
+        0,
+        filterCanvas.width,
+        filterCanvas.height
+      );
 
       if (effects.alpha) {
-        ctx.globalAlpha = Number(effects.alpha);
+        filterCtx.globalAlpha = Number(effects.alpha);
       }
-      ctx.drawImage(filteredImage, 0, 0, canvas.width, canvas.height);
+      filterCtx.drawImage(
+        filteredImage,
+        0,
+        0,
+        filterCanvas.width,
+        filterCanvas.height
+      );
       webGLFilter.reset();
     }
   }

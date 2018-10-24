@@ -13,8 +13,10 @@
   <div class="filter-demo">
     <div class="demo__main">
       <div class="demo__preview">
-
-        <canvas class="demo__canvas" id="demoCanvas"></canvas>
+        <div class="demo__canvas__wrapper">
+          <canvas class="demo__canvas demo__canvas--original" id="origCanvas"></canvas>
+          <canvas class="demo__canvas demo__canvas--filter" id="filterCanvas"></canvas>
+        </div>
 
         <select class="demo__select demo__select--image">
           <option value="1" selected>sample1.jpg</option>
