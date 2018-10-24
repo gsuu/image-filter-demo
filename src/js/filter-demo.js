@@ -22,7 +22,95 @@ const defaults = {
   imageSelectSelector: '.demo__select--image',
   rangeRootSelector: '.demo__range',
   rangeInputSelector: '.demo__range__input--range',
-  rangeNumberSelector: '.demo__range__number'
+  rangeNumberSelector: '.demo__range__number',
+  optionButtonSelector: '.demo__option__button'
+};
+
+const optionEffects = {
+  custom: {
+    brightness: 0,
+    contrast: 0,
+    saturation: 0,
+    hue: 0,
+    alpha: 0.25,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255
+    }
+  },
+  sharpen: {
+    brightness: 0,
+    contrast: 0.5,
+    saturation: 0,
+    hue: 0,
+    alpha: 0.25,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255
+    }
+  },
+  soft: {
+    brightness: 1,
+    contrast: 0.5,
+    saturation: 0,
+    hue: 0,
+    alpha: 0.1,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255
+    }
+  },
+  lovely: {
+    brightness: 1,
+    contrast: 0,
+    saturation: 0.5,
+    hue: 0,
+    alpha: 0.15,
+    color: {
+      r: 255,
+      g: 204,
+      b: 178
+    }
+  },
+  fancy: {
+    brightness: 0.16,
+    contrast: -0.09,
+    saturation: 0.69,
+    hue: 0,
+    alpha: 0.4,
+    color: {
+      r: 236,
+      g: 218,
+      b: 241
+    }
+  },
+  vintage: {
+    brightness: 1,
+    contrast: 1,
+    saturation: -0.59,
+    hue: -55,
+    alpha: 0.11,
+    color: {
+      r: 250,
+      g: 100,
+      b: 221
+    }
+  },
+  lomo: {
+    brightness: 0.5,
+    contrast: 1,
+    saturation: 1,
+    hue: 0,
+    alpha: 0.1,
+    color: {
+      r: 180,
+      g: 233,
+      b: 180
+    }
+  }
 };
 
 class filterDemo {
@@ -30,6 +118,9 @@ class filterDemo {
     const settings = Object.assign({}, defaults, options);
     const imageSelectbox = document.querySelector(settings.imageSelectSelector);
     const rangeInput = document.querySelectorAll(settings.rangeInputSelector);
+    const optionButton = document.querySelectorAll(
+      settings.optionButtonSelector
+    );
     const webGLFilter = new _filter.WebGLImageFilter();
     const colorPicker = new Picker({
       parent: document.querySelector('.demo__button--picker'),
@@ -44,8 +135,10 @@ class filterDemo {
       previewRoot: document.querySelector(settings.previewRootSelector),
       canvas: document.querySelector(settings.canvasSelector),
       image: document.querySelector(settings.imageSelector),
+      optionButton,
       imageSelectbox,
       webGLFilter,
+      colorPicker,
       effects: {
         brightness: 0,
         contrast: 0,
@@ -62,6 +155,7 @@ class filterDemo {
 
     imageSelectbox.onchange = e => {
       this.changeImage(e.target.value);
+      console.log(this.effects);
       this.changeEffect();
     };
 
@@ -84,6 +178,26 @@ class filterDemo {
 
       this.changeEffect();
     };
+
+    optionButton.forEach(button => {
+      button.onclick = e => {
+        if (e.target.className !== 'demo__option__button is--active') {
+          const optionName = e.target.dataset.option;
+
+          document
+            .querySelector('.demo__option__button.is--active')
+            .classList.remove('is--active');
+
+          e.target.classList.add('is--active');
+
+          this.effects = optionEffects[optionName];
+
+          Object.keys(optionEffects[optionName]).forEach(key => {
+            this.setRange(key, optionEffects[optionName][key]);
+          });
+        }
+      };
+    });
   }
 
   onLoad() {
@@ -113,6 +227,16 @@ class filterDemo {
 
     ctx.clearRect(0, 0, 600, this.image.naturalHeight * imageRatio);
     ctx.drawImage(this.image, 0, 0, 600, this.image.naturalHeight * imageRatio);
+  }
+
+  setRange(effectName, value) {
+    const rootElement = document.querySelector(`.demo__range--${effectName}`);
+    if (effectName !== 'color') {
+      rootElement.querySelector(defaults.rangeInputSelector).value = value;
+      rootElement.querySelector(defaults.rangeNumberSelector).innerHTML = value;
+    } else {
+      this.colorPicker.setColor(`rgb(${value.r}, ${value.g}, ${value.b})`);
+    }
   }
 
   changeValueText(rangeElement, value) {
