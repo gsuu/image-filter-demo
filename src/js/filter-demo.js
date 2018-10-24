@@ -26,7 +26,7 @@ const defaults = {
   optionButtonSelector: '.demo__option__button'
 };
 
-const optionEffects = {
+const defaultEffects = {
   custom: {
     brightness: 0,
     contrast: 0,
@@ -155,14 +155,13 @@ class filterDemo {
 
     imageSelectbox.onchange = e => {
       this.changeImage(e.target.value);
-      console.log(this.effects);
       this.changeEffect();
     };
 
     rangeInput.forEach(item => {
       item.oninput = e => {
         const effect = e.target.dataset.effect;
-        this.changeValueText(e.target, e.target.value);
+        this.changeRangeText(e.target, e.target.value);
         this.effects[effect] = e.target.value;
         this.changeEffect();
       };
@@ -172,9 +171,14 @@ class filterDemo {
       document.querySelector('.demo__button--picker').style.backgroundColor =
         color.rgbaString;
 
-      this.effects.color.r = color._rgba[0];
-      this.effects.color.g = color._rgba[1];
-      this.effects.color.b = color._rgba[2];
+      this.effects.color = Object.assign(
+        {},
+        {
+          r: color._rgba[0],
+          g: color._rgba[1],
+          b: color._rgba[2]
+        }
+      );
 
       this.changeEffect();
     };
@@ -190,10 +194,10 @@ class filterDemo {
 
           e.target.classList.add('is--active');
 
-          this.effects = optionEffects[optionName];
+          this.effects = Object.assign({}, defaultEffects[optionName]);
 
-          Object.keys(optionEffects[optionName]).forEach(key => {
-            this.setRange(key, optionEffects[optionName][key]);
+          Object.keys(defaultEffects[optionName]).forEach(key => {
+            this.setRange(key, defaultEffects[optionName][key]);
           });
         }
       };
@@ -239,7 +243,7 @@ class filterDemo {
     }
   }
 
-  changeValueText(rangeElement, value) {
+  changeRangeText(rangeElement, value) {
     const rangeNumber = rangeElement.parentElement.querySelector(
       defaults.rangeNumberSelector
     );
@@ -284,6 +288,10 @@ class filterDemo {
         ]);
       }
 
+      if (effects.hue) {
+        webGLFilter.addFilter('hue', Number(effects.hue));
+      }
+
       if (effects.brightness) {
         webGLFilter.addFilter('brightness', Number(effects.brightness));
       }
@@ -294,10 +302,6 @@ class filterDemo {
 
       if (effects.saturation) {
         webGLFilter.addFilter('saturation', Number(effects.saturation));
-      }
-
-      if (effects.hue) {
-        webGLFilter.addFilter('hue', Number(effects.hue));
       }
 
       filteredImage = webGLFilter.apply(image);
